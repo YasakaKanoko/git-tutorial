@@ -6,7 +6,7 @@
 
 
 
-- [`sort()`](#`sort()`)
+- [`sort()`](#`sort`)
 - [sort1()](#sort1)
 
 
