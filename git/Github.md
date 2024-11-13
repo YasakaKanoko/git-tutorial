@@ -191,7 +191,7 @@ console.log('Hello');
 ```markdown
 [Google][google]
 
-[google]:wwhttps://www.google.com/
+[google]:whttps://www.google.com/
 ```
 
 # 表格
