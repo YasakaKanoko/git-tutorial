@@ -215,7 +215,9 @@ git push origin <branchName>:<branchName>
 git push -f
 ```
 
-## 查看分支
+## 分支
+
+### 查看分支
 
 ```shell
 # 查看所有分支
@@ -237,19 +239,116 @@ git reflog show --date=iso main
 git branch -a | grep dev
 ```
 
-## 切换分支
+分支备注
 
 ```shell
-# 切换到main分支
-git checkout main
+# 命令
+git config branch.{branch_name}.description 备注内容
 
-# 切换上一个分支
-git checkout -
-
-# 强制切换, 但是要小心，如果文件未保存修改会直接覆盖掉
-git checkout -f main
-
-# -t, 切换远端分支, 如果用了 git remote 添加一个新仓库就需要用 -t 进行切换
-git checkout -t upstream/main
+# 给 hotfix/tip 分支添加备注信息
+git config branch.hotfix/tip.description 修复细节
 ```
+
+
+
+### 切换分支
+
+- `git checkout`
+
+  ```shell
+  # 切换到main分支
+  git checkout main
+  
+  # 切换上一个分支
+  git checkout -
+  
+  # 强制切换, 但是要小心，如果文件未保存修改会直接覆盖掉
+  git checkout -f main
+  
+  # -t, 切换远端分支, 如果用了 git remote 添加一个新仓库就需要用 -t 进行切换
+  git checkout -t upstream/main
+  ```
+
+- `git switch`
+
+  ```shell
+  # 切换到 develop 分支
+  git switch develop
+  
+  # 切换到上一个分支
+  git switch -
+  
+  # 强制切换到 develop 分支，并抛弃本地所有修改
+  git switch -f develop
+  
+  # 创建分支并切换
+  git switch -c newBranch
+  
+  # 强制创建分支
+  git switch -C newBranch
+  
+  # 从前3次提交进行创建新的分支
+  git switch -c newBranch HEAD〜3
+  
+  # -t, 切换远端分支, 如果用了 git remote 添加一个新仓库就需要用 -t 进行切换
+  git switch -t upstream/main
+  ```
+
+### 创建分支
+
+```shell
+# 创建一个名为 develop 本地分支
+git branch develop
+
+# 强制创建分支, 不输出任何警告或信息
+git branch -f develop
+
+# 创建本地 develop 分支并切换
+git checkout -b develop
+
+# 创建远程分支, 实际上创建本地分支然后推送到远端
+git checkout -b develop
+git push origin develop
+
+# 创建一个空的分支, 不继承父分支，历史记录是空的，一般至少需要执行4步
+git checkout --orphan develop
+git rm -rf .  # 这一步可选，如果你真的想创建一个没有任何文件的分支
+git add -A && git commit -m "提交" # 添加并提交，否则分支是隐藏的 （执行这一步之前需要注意当前工作区必须保留一个文件，否则无法提交）
+git push --set-upstream origin develop # 推送到远程
+```
+
+### 删除分支
+
+删除分支不能删除当前分支，先切换到其他分支再删除
+
+```shell
+# 删除本地分支
+git branch -d <branchName>
+
+# 大写 D 强制删除未完全合并的分支
+# 等价 git branch --delete --force <branchName>
+git branch -D <branchName>
+
+# 删除远程分支
+git push origin :<branchName>
+git push origin --delete <branch-name>  # >= 1.7.0
+```
+
+### 重命名分支
+
+```shell
+# 重命名当前分支, 通常情况下需要执行3步
+# 1、修改分支名称
+# 2、删除远程旧分支
+# 3、将重命名分支推送到远程
+git branch -m <branchName>
+git push origin :old_branch
+git push -u origin new_branch
+
+
+# 重命名指定分支
+git branch -m old_branch new_branch
+```
+
+
 
