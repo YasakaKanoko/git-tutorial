@@ -28,7 +28,7 @@
 - [tag](#tag)
 - [SSH_Key](#sshkey)
 - [gitignore](#gitignore)
-- [gh-pages](#ghpages)
+- [gh-pages](#gh-pages)
 
 ## 安装
 
