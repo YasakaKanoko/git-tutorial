@@ -22,6 +22,13 @@
 - [合并分支](#合并分支)
 - [变基](#变基)
 - [远程](#远程)
+- [推送](#推送)
+- [克隆](#克隆)
+- [管理仓库](#管理仓库)
+- [tag](#tag)
+- [SSH_Key](#sshkey)
+- [gitignore](#gitignore)
+- [gh-pages](#ghpages)
 
 ## 安装
 
@@ -428,25 +435,23 @@ git branch -M main
 git push -u origin main
 ```
 
-
-
 ### 推送
 
 ```shell
 # 等价于 git push origin, 实际上推送到一个叫 origin 默认仓库名字
 git push
 
-# 推送到主分支
+# 推送到主分支 <分支名> 本地与远程分支名称一致
 git push -u origin main
 
-# 本地分支推送到远程分支， 本地分支:远程分支
+# 本地分支推送到指定远程分支 <本地分支>:<远程分支>
 git push origin <branchName>:<branchName>
 
 # 强制推送, --force 缩写
 git push -f
 ```
 
-## 克隆
+### 克隆
 
 ```shell
 # https 协议克隆
@@ -479,7 +484,7 @@ git clone --bare https://github.com/xjh22222228/git-manual.git
 git clone --mirror https://github.com/xjh22222228/git-manual.git
 ```
 
-### 克隆指定文件夹
+克隆指定文件夹
 
 ```shell
 # 1. 创建目录并进入
@@ -501,7 +506,7 @@ echo 'path/to/file' >> .git/info/sparse-checkout
 git pull origin main
 ```
 
-## 管理仓库
+### 管理仓库
 
 ```shell
 # 查看远程仓库服务器, 一般打印 origin , 这是 Git 给你克隆的仓库服务器的默认名字
@@ -529,5 +534,157 @@ git remote set-url origin git@github.com:YasakaKanoko/git-tutorial.git
 
 # 后续的推送可以指定仓库名字
 git push example
+
+# 先确保远程库与本地库版本一致, fetch从远程库下载所有代码, 但不合并
+git fetch
 ```
+
+### tag
+
+当头指针没有指向某分支的头部时，这种状态称为 **分离头指针**
+
+分离头指针时，不要操作仓库
+
+```shell
+# 分离头指针
+git switch aab508 --detach
+```
+
+执政并没有指向任何分支，操作仓库代码没有意义，正确做法是先创建一个新分支再将头指针指向
+
+```shell
+# 在记录为aab508上新建分支
+git switch -c <branch_name> aab508
+```
+
+可以为提交记录设置标签，通过标签辨别不同的开发节点
+
+```shell
+# 当前分支上的<tag>是v1.0
+git tag v1.0
+
+# 1. 提交id为aab508的分支设置<tag>为v2.0
+git tag v2.0 aab508
+
+# 2. 为aab508新建分支并指向, 如果不新建分支会出现分离头指针问题
+git switch -c test v2.0
+
+# 3. 推送指定标签至远程库
+git push origin v1.0
+
+# 删除本地标签
+git tag -d <tag_name>
+
+# 删除远程标签
+git tag <remote_name> --delete <tag_name>
+```
+
+### SSH_Key
+
+```shell
+# 1. 生成SSH_Key
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+# Enter passphrase (empty for no passphrase):    # 直接回车
+# Enter same passphrase again:                   # 直接回车
+
+# 2. 在用户目录: C:\Users\YasakaKanoko\.ssh
+# id_rsa: 私钥
+# id_rsa.pub: 公钥
+
+# 3. 在GitHub的Settings -> SSH and GPG keys -> New SSH key
+# Title 命名
+# Key: id_rsa.pub公钥的内容
+# Add SSH key
+
+# 4. 验证
+ssh -T git@github.com
+# Hi YasakaKanoko! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+### gitignore
+
+默认情况下，git 会监视所有内容，但有些内容不希望被监视 ，如：node_modules 的内容
+
+设置 `.gitignore` 内容需要 git 忽略的文件
+
+```pseudocode
+# 忽略的内容
+node_modules
+yarn.lock
+*.log
+```
+
+## gh-pages
+
+在 GitHub 中，可以将静态页面部署到 GitHub 中
+
+**要求**：
+
+- 方式一：分支名必须为：`gh-pages`
+
+  ```shell
+  # 1. 添加远程库
+  git remote add origin https://github.com/YasakaKanoko/git-tutorial.git
+  
+  # 2. 修改分支名为 gh-pages
+  git branch -M gh-pages
+  
+  # 3. 推送分支
+  git push -u origin gh-pages
+  
+  # 4. 通过xxx.github.io访问
+  ```
+
+- 方式二：新建仓库时，命名为 `xxx.github.io` 也可
+
+### [Docusaurus](https://docusaurus.io/)
+
+FB 推出的开源静态内容管理系统，快速部署一个静态网站
+
+- 安装
+
+  ```shell
+  npx create-docusaurus@latest my-website classic
+  ```
+
+- 启动项目
+
+  ```shell
+  npm start
+  ```
+
+- 配置项目：`docusaurus.config.js` 项目配置文件
+
+  ```javascript
+  const config = {
+      title: 'xxx', // 标题栏
+      tagline: 'xxx', // 副标题
+      url: 'https://xxx.github.io', // 网站根目录
+      baseUrl: '/',
+      onBrokenLinks: 'throw',
+      onBrokenMarkdownLinks: 'warn',
+      favicon: 'img/favicon.ico',
+      organizationName: 'xxx', // 用户名
+      projectName: 'xxx.github.io', // 仓库地址
+      // 国际化: internalization
+      i18n: {
+          defaultLocale: 'zh',
+          locales: ['zh']
+      }
+  };
+  ```
+
+- 部署：`npm run build`
+
+  ```shell
+  npm deploy
+  ```
+
+- 配置 `deploymentBranch` 指定分支
+
+  ```javascript
+  deploymentBranch: 'gh-pages'
+  ```
+
+- 配置环境变量：`GIT_USER` : `username`
 
