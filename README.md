@@ -2,9 +2,33 @@
 
 目录：
 
-- 
+- [安装](#安装)
+- [配置](#配置)
+- [别名](#别名)
+- [初始化仓库](#初始化仓库)
+- [暂存区](#暂存区)
+- [commit](#提交)
+- [log](#log)
+- [文件操作](#文件操作)
+- [还原](#还原)
+- [删除](#删除)
+- [移动/重命名文件](#移动重命名文件)
+- [分支](#分支)
+- [查看分支](#查看分支)
+- [切换分支](#切换分支)
+- [创建分支](#创建分支)
+- [删除分支](#删除分支)
+- [重命名分支](#重命名分支)
+- [合并分支](#合并分支)
+- [变基](#变基)
+- [远程](#远程)
 
+## 安装
 
+```shell
+# 查看版本号
+git -v
+```
 
 ## 配置
 
@@ -25,9 +49,6 @@ git config --global --get user.email
 # 设置当前工作区用户名/邮箱
 git config --local user.name "username"
 git config --local user.email "example@gmail.com"
-
-# 查看所有配置及其所在文件
-git config --list --show-origin
 
 # 删除配置
 git config --unset --global user.name
@@ -51,6 +72,7 @@ git config --global credential.helper cache # 临时，默认15分钟
 
 ```shell
 # git st 等价于 git status
+# git status: 查看仓库的状态
 git config --global alias.st status
 
 # 如果之前添加过，需要添加 --replace-all 进行覆盖
@@ -73,92 +95,7 @@ git init -q
 git init --bare
 ```
 
-## 克隆
-
-```shell
-# https 协议克隆
-git clone https://github.com/YasakaKanoko/git-tutorial.git
-
-# SSH 协议克隆
-git clone git@github.com:YasakaKanoko/git-tutorial.git
-
-# 克隆指定分支， -b 指定分支名字，实际上是克隆所有分支并切换到 develop 分支上
-git clone -b develop https://github.com/YasakaKanoko/git-tutorial.git
-
-# --single-branch 完全只克隆指定分支
-git clone -b develop --single-branch https://github.com/YasakaKanoko/git-tutorial.git
-
-# 指定克隆后的文件夹名称
-git clone https://github.com/YasakaKanoko/git-tutorial.git git-study # 如果后面是 . 在当前目录创建
-
-# 递归克隆，如果项目包含子模块就非常有用
-git clone --recursive https://github.com/YasakaKanoko/git-tutorial.git
-
-# 浅克隆, 克隆深度为1, 只克隆指定分支且历史记录只保留最后一条, 通常用于减少克隆时间和项目大小
-git clone --depth=1 https://github.com/YasakaKanoko/git-tutorial.git
-# --no-single-branch 同时克隆其他所有分支
-git clone --depth=1 --no-single-branch https://github.com/YasakaKanoko/git-tutorial.git 
-
-# 裸克隆, 没有工作区内容，不能进行提交修改，一般用于复制仓库
-git clone --bare https://github.com/xjh22222228/git-manual.git
-
-# 镜像克隆, 也是裸克隆, 区别于包含上游版本库注册
-git clone --mirror https://github.com/xjh22222228/git-manual.git
-```
-
-### 克隆指定文件夹
-
-```shell
-# 1. 创建目录并进入
-cd ./example
-
-# 2. 初始化仓库
-git init
-
-# 3. 设置仓库地址
-git remote add origin https://github.com/YasakaKanoko/git-tutorial.git
-
-# 4. 开启稀疏检出功能
-git config core.sparsecheckout true
-
-# 5. 配置要检出的文件
-echo 'path/to/file' >> .git/info/sparse-checkout
-
-# 6. 拉取内容
-git pull origin main
-```
-
-## 管理仓库
-
-```shell
-# 查看远程仓库服务器, 一般打印 origin , 这是 Git 给你克隆的仓库服务器的默认名字
-# 一般只会显示 origin , 除非你有多个远程仓库地址
-git remote
-
-# 指定-v, 查看当前远程仓库地址
-git remote -v
-
-# 添加远程仓库地址 example 是自定义名字
-# 添加完后可以通过 git remote 就能看到 example
-git remote add example https://github.com/YasakaKanoko/git-tutorial.git
-
-# 查看指定远程仓库信息
-git remote show example
-
-# 重命名远程仓库
-git remote rename oldName newName
-
-# 移除远程仓库
-git remote remove example
-
-# 修改远程仓库地址，从HTTPS更改为SSH
-git remote set-url origin git@github.com:YasakaKanoko/git-tutorial.git
-
-# 后续的推送可以指定仓库名字
-git push example
-```
-
-### 暂存
+## 暂存区
 
 ```shell
 # 暂存所有
@@ -166,6 +103,9 @@ git add -A
 
 # 暂存某个文件
 git add ./README.md
+
+# 暂存所有未跟踪的文件
+git add *
 
 # 暂存当前目录所有改动文件
 git add .
@@ -178,10 +118,13 @@ git add 1.txt 2.txt ...
 
 ```shell
 # -m 提交的描述信息
-git commit -m "changes log"
+git commit -m "xxxx"
+
+# -a 提交所有已修改的文件(未跟踪的文件不会提交)
+git commit -a -m "xxxx"
 
 # 只提交某个文件
-git commit README.md -m "message"
+git commit README.md -m "xxxx"
 
 # 提交并显示diff变化
 git commit -v
@@ -190,7 +133,7 @@ git commit -v
 git commit --allow-empty-message
 
 # 重写上一次提交信息，确保当前工作区没有改动
-git commit --amend -m "新的提交信息"
+git commit --amend -m "xxxx"
 ```
 
 **修改提交日期**：`git commit --date="月 日 时间 年 +0800" -m "init"`
@@ -199,32 +142,92 @@ git commit --amend -m "新的提交信息"
 git commit --date="Mar 7 21:05:20 2021 +0800" -m "init"
 ```
 
-## 推送
+### log
 
 ```shell
-# 等价于 git push origin, 实际上推送到一个叫 origin 默认仓库名字
-git push
+# 查看文件提交记录
+git log
+```
 
-# 推送到主分支
-git push -u origin main
+## 文件操作
 
-# 本地分支推送到远程分支， 本地分支:远程分支
-git push origin <branchName>:<branchName>
+### 还原
 
-# 强制推送, --force 缩写
-git push -f
+```shell
+# 重置到最后一次提交时的状态
+git restore ./1.txt
+
+# 重置所有文件到最后一次提交时状态
+git restore *
+
+# 将文件从暂存状态取消
+git restore --staged ./1.txt
+```
+
+### 删除
+
+```shell
+# 删除文件, 有改动时不删
+git rm ./file.txt
+
+# 强制删除
+git rm ./file.txt -f
+
+# 删除所有文件, 但不删除.git目录
+git rm -rf .
+
+# 清除工作区缓存, 但不删除文件
+git rm -r --cached
+```
+
+### 移动/重命名文件
+
+```shell
+# git mv from源文件 to重命名文件
+git mv ./1.txt ./2.txt
 ```
 
 ## 分支
 
+git 存储文件时，每次代码提交会产生与之对应的节点，git 通过节点记录代码状态，构成一个**树状结构**
+
+Master/Main ：分支主干
+
+```shell
+# 查看当前分支
+git branch 
+
+# 创建新分支
+git branch <branch_name>
+
+# 删除分支
+git branch -d <branch_name>
+
+# 切换分支
+git switch <branch_name>
+
+# 创建分支并切换
+git switch -c <branch_name>
+
+# 合并分支
+git merge <branch_name>
+git branch -d <branch_name> # 合并后必须删除
+```
+
+分支冲突
+
+1. 切回 `main` 分支，然后合并分支 `git merge`，产生冲突
+2. 源文件中处理分支， `git commit`
+3. `git branch -d` 删除副分支
+
 ### 查看分支
 
 ```shell
+# 查看当前分支
+git branch
+
 # 查看所有分支
 git branch -a
-
-# 查看本地分支
-git branch
 
 # 查看远端分支
 git branch -r
@@ -248,8 +251,6 @@ git config branch.{branch_name}.description 备注内容
 # 给 hotfix/tip 分支添加备注信息
 git config branch.hotfix/tip.description 修复细节
 ```
-
-
 
 ### 切换分支
 
@@ -350,5 +351,183 @@ git push -u origin new_branch
 git branch -m old_branch new_branch
 ```
 
+### 合并分支
 
+分支合并前需要先切换到主分支
+
+```shell
+git checkout dev
+```
+
+```shell
+# 合并上一分支
+git merge -
+
+# 安静模式合并, 将dev合并至当前分支不输出任何信息
+git merge dev -q
+
+# 合并不编辑信息, 跳过交互
+git merge dev --no-edit
+
+# 合并分支不进行提交
+git merge dev --no-commit
+
+# 退出合并, 恢复至合并之前的状态
+git merge --abort
+```
+
+### 变基
+
+变基 ( rebase )：合并分支
+
+**原理**：
+
+1. 发起变基时，git 会先找到两条分支的共同祖先
+2. 对比当前分支相对祖先的历史提交
+3. 将当前部分作为执行目标的**基底**
+
+变基相对于 `merge` 来说，结果是一样的，变基的代码提交记录更简洁清晰
+
+```shell
+# 1. 切换分支dev
+git switch dev
+
+# 2. 将dev的基底变为main
+git rebase main
+# 没有冲突, 直接推送
+
+# 3. 处理冲突->暂存->变基->推送
+git add -A
+git rebase --continue # 继续
+git push -f # 强制推送
+```
+
+中断变基
+
+```shell
+git rebase --abort
+```
+
+## 远程
+
+```shell
+# 查看远程服务器
+# origin: 默认远程库名称
+git remote
+
+# 查看当前远程库的地址
+git remote -v
+
+# 添加远程库 remote_name默认为origin
+git remote add <remote_name> https://github.com/YasakaKanoko/git-tutorial.git
+
+# 修改分支的名称为 main 
+git branch -M main
+
+# -u: --set-upstream的简写, 将本地与远程建立追踪关系, 之后只需执行 git pull/git push
+git push -u origin main
+```
+
+
+
+### 推送
+
+```shell
+# 等价于 git push origin, 实际上推送到一个叫 origin 默认仓库名字
+git push
+
+# 推送到主分支
+git push -u origin main
+
+# 本地分支推送到远程分支， 本地分支:远程分支
+git push origin <branchName>:<branchName>
+
+# 强制推送, --force 缩写
+git push -f
+```
+
+## 克隆
+
+```shell
+# https 协议克隆
+git clone https://github.com/YasakaKanoko/git-tutorial.git
+
+# SSH 协议克隆
+git clone git@github.com:YasakaKanoko/git-tutorial.git
+
+# 克隆指定分支， -b 指定分支名字，实际上是克隆所有分支并切换到 develop 分支上
+git clone -b develop https://github.com/YasakaKanoko/git-tutorial.git
+
+# --single-branch 完全只克隆指定分支
+git clone -b develop --single-branch https://github.com/YasakaKanoko/git-tutorial.git
+
+# 指定克隆后的文件夹名称
+git clone https://github.com/YasakaKanoko/git-tutorial.git git-study # 如果后面是 . 在当前目录创建
+
+# 递归克隆，如果项目包含子模块就非常有用
+git clone --recursive https://github.com/YasakaKanoko/git-tutorial.git
+
+# 浅克隆, 克隆深度为1, 只克隆指定分支且历史记录只保留最后一条, 通常用于减少克隆时间和项目大小
+git clone --depth=1 https://github.com/YasakaKanoko/git-tutorial.git
+# --no-single-branch 同时克隆其他所有分支
+git clone --depth=1 --no-single-branch https://github.com/YasakaKanoko/git-tutorial.git 
+
+# 裸克隆, 没有工作区内容，不能进行提交修改，一般用于复制仓库
+git clone --bare https://github.com/xjh22222228/git-manual.git
+
+# 镜像克隆, 也是裸克隆, 区别于包含上游版本库注册
+git clone --mirror https://github.com/xjh22222228/git-manual.git
+```
+
+### 克隆指定文件夹
+
+```shell
+# 1. 创建目录并进入
+cd ./example
+
+# 2. 初始化仓库
+git init
+
+# 3. 设置仓库地址
+git remote add origin https://github.com/YasakaKanoko/git-tutorial.git
+
+# 4. 开启稀疏检出功能
+git config core.sparsecheckout true
+
+# 5. 配置要检出的文件
+echo 'path/to/file' >> .git/info/sparse-checkout
+
+# 6. 拉取内容
+git pull origin main
+```
+
+## 管理仓库
+
+```shell
+# 查看远程仓库服务器, 一般打印 origin , 这是 Git 给你克隆的仓库服务器的默认名字
+# 一般只会显示 origin , 除非你有多个远程仓库地址
+git remote
+
+# 指定-v, 查看当前远程仓库地址
+git remote -v
+
+# 添加远程仓库地址 example 是自定义名字
+# 添加完后可以通过 git remote 就能看到 example
+git remote add example https://github.com/YasakaKanoko/git-tutorial.git
+
+# 查看指定远程仓库信息
+git remote show example
+
+# 重命名远程仓库
+git remote rename oldName newName
+
+# 移除远程仓库
+git remote remove example
+
+# 修改远程仓库地址，从HTTPS更改为SSH
+git remote set-url origin git@github.com:YasakaKanoko/git-tutorial.git
+
+# 后续的推送可以指定仓库名字
+git push example
+```
 
