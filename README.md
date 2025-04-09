@@ -1,43 +1,65 @@
-# Git-tutorial
+# <samp>Git-tutorial</samp>
 
-**目录**：
+<samp><b>Table Of Contents</b></samp>
 
-- [安装](#安装)
-- [配置](#配置)
-- [别名](#别名)
-- [初始化仓库](#初始化仓库)
-- [暂存区](#暂存区)
-- [commit](#提交)
-- [log](#log)
-- [文件操作](#文件操作)
-- [还原](#还原)
-- [删除](#删除)
-- [移动/重命名文件](#移动重命名文件)
-- [分支](#分支)
-- [查看分支](#查看分支)
-- [切换分支](#切换分支)
-- [创建分支](#创建分支)
-- [删除分支](#删除分支)
-- [重命名分支](#重命名分支)
-- [合并分支](#合并分支)
-- [变基](#变基)
-- [远程](#远程)
-- [推送](#推送)
-- [克隆](#克隆)
-- [管理仓库](#管理仓库)
-- [tag](#tag)
-- [SSH_Key](#sshkey)
-- [gitignore](#gitignore)
-- [gh-pages](#gh-pages)
+- <samp>[SSH_Key](#ssh-key)</samp>
+- <samp>[.gitignore](#gitignore)</samp>
+- <samp>[配置](#配置)</samp>
+- <samp>[别名](#别名)</samp>
+- <samp>[初始化仓库](#初始化仓库)</samp>
+- <samp>[暂存区](#暂存区)</samp>
+- <samp>[提交](#提交)</samp>
+- <samp>[文件](#文件)</samp>
+- <samp>[分支](#分支)</samp>
+- <samp>[变基](#变基)</samp>
+- <samp>[远程](#远程)</samp>
+- <samp>[tag](#tag)</samp>
+- <samp>[gh-pages](#gh-pages)</samp>
 
-## 安装
+## <samp>SSH_Key</samp>
 
 ```shell
-# 查看版本号
-git -v
+# 1. 生成SSH_Key
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+# Enter passphrase (empty for no passphrase):    # 直接回车
+# Enter same passphrase again:                   # 直接回车
+
+# 2. 在用户目录: C:\Users\YasakaKanoko\.ssh
+# id_rsa: 私钥
+# id_rsa.pub: 公钥
+
+# 3. 在GitHub的Settings -> SSH and GPG keys -> New SSH key
+# Title 命名
+# Key: id_rsa.pub公钥的内容
+# Add SSH key
+
+# 4. 验证
+ssh -T git@github.com
+# Hi YasakaKanoko! You've successfully authenticated, but GitHub does not provide shell access.
 ```
 
-## 配置
+## <samp>gitignore</samp>
+
+<samp>默认情况下，git 会监视所有内容，但有些内容不希望被监视 ，如：`node_modules` 的内容</samp>
+
+<samp>设置 `.gitignore` 内容需要 git 忽略的文件</samp>
+
+```pseudocode
+# 忽略的内容
+node_modules
+yarn.lock
+*.log
+```
+
+
+
+
+
+
+
+
+
+## <samp>配置</samp>
 
 ```shell
 # 查看全局配置
@@ -75,7 +97,7 @@ git config --global credential.helper store # 永久
 git config --global credential.helper cache # 临时，默认15分钟
 ```
 
-## 别名
+## <samp>别名</samp>
 
 ```shell
 # git st 等价于 git status
@@ -89,7 +111,7 @@ git config --global --replace-all alias.st status
 git config --global --unset alias.st
 ```
 
-## 初始化仓库
+## <samp>初始化仓库</samp>
 
 ```shell
 # 会在当前目录生成.git
@@ -102,7 +124,7 @@ git init -q
 git init --bare
 ```
 
-## 暂存区
+## <samp>暂存区</samp>
 
 ```shell
 # 暂存所有
@@ -121,7 +143,7 @@ git add .
 git add 1.txt 2.txt ...
 ```
 
-## 提交
+## <samp>提交</samp>
 
 ```shell
 # -m 提交的描述信息
@@ -143,22 +165,22 @@ git commit --allow-empty-message
 git commit --amend -m "xxxx"
 ```
 
-**修改提交日期**：`git commit --date="月 日 时间 年 +0800" -m "init"`
+<samp>**修改提交日期**：`git commit --date="月 日 时间 年 +0800" -m "init"`</samp>
 
 ```bash
 git commit --date="Mar 7 21:05:20 2021 +0800" -m "init"
 ```
 
-### log
+<samp><b>log</b></samp>
 
 ```shell
 # 查看文件提交记录
 git log
 ```
 
-## 文件操作
+## <samp>文件</samp>
 
-### 还原
+### <samp>还原</samp>
 
 ```shell
 # 重置到最后一次提交时的状态
@@ -171,7 +193,7 @@ git restore *
 git restore --staged ./1.txt
 ```
 
-### 删除
+### <samp>删除</samp>
 
 ```shell
 # 删除文件, 有改动时不删
@@ -187,18 +209,18 @@ git rm -rf .
 git rm -r --cached
 ```
 
-### 移动/重命名文件
+### <samp>移动/重命名文件</samp>
 
 ```shell
 # git mv from源文件 to重命名文件
 git mv ./1.txt ./2.txt
 ```
 
-## 分支
+## <samp>分支</samp>
 
-git 存储文件时，每次代码提交会产生与之对应的节点，git 通过节点记录代码状态，构成一个**树状结构**
+<samp>git 存储文件时，每次代码提交会产生与之对应的节点，git 通过节点记录代码状态，构成一个**树状结构**</samp>
 
-Master/Main ：分支主干
+<samp>Main ：分支主干</samp>
 
 ```shell
 # 查看当前分支
@@ -221,13 +243,13 @@ git merge <branch_name>
 git branch -d <branch_name> # 合并后必须删除
 ```
 
-分支冲突
+<samp><b>分支冲突</b></samp>
 
-1. 切回 `main` 分支，然后合并分支 `git merge`，产生冲突
-2. 源文件中处理分支， `git commit`
-3. `git branch -d` 删除副分支
+1. <samp>切回 `main` 分支，然后合并分支 `git merge`，产生冲突</samp>
+2. <samp>源文件中处理分支， `git commit`</samp>
+3. <samp>`git branch -d` 删除副分支</samp>
 
-### 查看分支
+### <samp>查看分支</samp>
 
 ```shell
 # 查看当前分支
@@ -249,7 +271,7 @@ git reflog show --date=iso main
 git branch -a | grep dev
 ```
 
-分支备注
+<samp>分支备注</samp>
 
 ```shell
 # 命令
@@ -259,50 +281,50 @@ git config branch.{branch_name}.description 备注内容
 git config branch.hotfix/tip.description 修复细节
 ```
 
-### 切换分支
+### <samp>切换分支</samp>
 
-- `git checkout`
+<samp>`git checkout`</samp>
 
-  ```shell
-  # 切换到main分支
-  git checkout main
-  
-  # 切换上一个分支
-  git checkout -
-  
-  # 强制切换, 但是要小心，如果文件未保存修改会直接覆盖掉
-  git checkout -f main
-  
-  # -t, 切换远端分支, 如果用了 git remote 添加一个新仓库就需要用 -t 进行切换
-  git checkout -t upstream/main
-  ```
+```shell
+# 切换到main分支
+git checkout main
 
-- `git switch`
+# 切换上一个分支
+git checkout -
 
-  ```shell
-  # 切换到 develop 分支
-  git switch develop
-  
-  # 切换到上一个分支
-  git switch -
-  
-  # 强制切换到 develop 分支，并抛弃本地所有修改
-  git switch -f develop
-  
-  # 创建分支并切换
-  git switch -c newBranch
-  
-  # 强制创建分支
-  git switch -C newBranch
-  
-  # 从前3次提交进行创建新的分支
-  git switch -c newBranch HEAD〜3
-  
-  # -t, 切换远端分支, 如果用了 git remote 添加一个新仓库就需要用 -t 进行切换
-  git switch -t upstream/main
-  ```
+# 强制切换, 但是要小心，如果文件未保存修改会直接覆盖掉
+git checkout -f main
 
-### 创建分支
+# -t, 切换远端分支, 如果用了 git remote 添加一个新仓库就需要用 -t 进行切换
+git checkout -t upstream/main
+```
+
+<samp>`git switch`</samp>
+
+```shell
+# 切换到 develop 分支
+git switch develop
+
+# 切换到上一个分支
+git switch -
+
+# 强制切换到 develop 分支，并抛弃本地所有修改
+git switch -f develop
+
+# 创建分支并切换
+git switch -c newBranch
+
+# 强制创建分支
+git switch -C newBranch
+
+# 从前3次提交进行创建新的分支
+git switch -c newBranch HEAD〜3
+
+# -t, 切换远端分支, 如果用了 git remote 添加一个新仓库就需要用 -t 进行切换
+git switch -t upstream/main
+```
+
+### <samp>创建分支</samp>
 
 ```shell
 # 创建一个名为 develop 本地分支
@@ -325,9 +347,9 @@ git add -A && git commit -m "提交" # 添加并提交，否则分支是隐藏�
 git push --set-upstream origin develop # 推送到远程
 ```
 
-### 删除分支
+### <samp>删除分支</samp>
 
-删除分支不能删除当前分支，先切换到其他分支再删除
+<samp>删除分支不能删除当前分支，先切换到其他分支再删除</samp>
 
 ```shell
 # 删除本地分支
@@ -342,7 +364,7 @@ git push origin :<branchName>
 git push origin --delete <branch-name>  # >= 1.7.0
 ```
 
-### 重命名分支
+### <samp>重命名分支</samp>
 
 ```shell
 # 重命名当前分支, 通常情况下需要执行3步
@@ -358,9 +380,9 @@ git push -u origin new_branch
 git branch -m old_branch new_branch
 ```
 
-### 合并分支
+### <samp>合并分支</samp>
 
-分支合并前需要先切换到主分支
+<samp>分支合并前需要先切换到主分支</samp>
 
 ```shell
 git checkout dev
@@ -383,17 +405,17 @@ git merge dev --no-commit
 git merge --abort
 ```
 
-### 变基
+### <samp>变基</samp>
 
-变基 ( rebase )：合并分支
+<samp>变基 ( rebase )：合并分支</samp>
 
-**原理**：
+<samp>**原理**：</samp>
 
-1. 发起变基时，git 会先找到两条分支的共同祖先
-2. 对比当前分支相对祖先的历史提交
-3. 将当前部分作为执行目标的**基底**
+1. <samp>发起变基时，git 会先找到两条分支的共同祖先</samp>
+2. <samp>对比当前分支相对祖先的历史提交</samp>
+3. <samp>将当前部分作为执行目标的**基底**</samp>
 
-变基相对于 `merge` 来说，结果是一样的，变基的代码提交记录更简洁清晰
+<samp>变基相对于 `merge` 来说，结果是一样的，变基的代码提交记录更简洁清晰</samp>
 
 ```shell
 # 1. 切换分支dev
@@ -409,13 +431,13 @@ git rebase --continue # 继续
 git push -f # 强制推送
 ```
 
-中断变基
+<samp>中断变基</samp>
 
 ```shell
 git rebase --abort
 ```
 
-## 远程
+## <samp>远程</samp>
 
 ```shell
 # 查看远程服务器
@@ -435,7 +457,7 @@ git branch -M main
 git push -u origin main
 ```
 
-### 推送
+### <samp>推送</samp>
 
 ```shell
 # 等价于 git push origin, 实际上推送到一个叫 origin 默认仓库名字
@@ -451,7 +473,7 @@ git push origin <branchName>:<branchName>
 git push -f
 ```
 
-### 克隆
+### <samp>克隆</samp>
 
 ```shell
 # https 协议克隆
@@ -484,7 +506,7 @@ git clone --bare https://github.com/xjh22222228/git-manual.git
 git clone --mirror https://github.com/xjh22222228/git-manual.git
 ```
 
-克隆指定文件夹
+<samp>克隆指定文件夹</samp>
 
 ```shell
 # 1. 创建目录并进入
@@ -506,7 +528,7 @@ echo 'path/to/file' >> .git/info/sparse-checkout
 git pull origin main
 ```
 
-### 管理仓库
+### <samp>管理仓库</samp>
 
 ```shell
 # 查看远程仓库服务器, 一般打印 origin , 这是 Git 给你克隆的仓库服务器的默认名字
@@ -539,25 +561,25 @@ git push example
 git fetch
 ```
 
-### tag
+### <samp>tag</samp>
 
-当头指针没有指向某分支的头部时，这种状态称为 **分离头指针**
+<samp>当头指针没有指向某分支的头部时，这种状态称为 **分离头指针**</samp>
 
-分离头指针时，不要操作仓库
+<samp>分离头指针时，不要操作仓库</samp>
 
 ```shell
 # 分离头指针
 git switch aab508 --detach
 ```
 
-执政并没有指向任何分支，操作仓库代码没有意义，正确做法是先创建一个新分支再将头指针指向
+<samp>指针并没有指向任何分支，操作仓库代码没有意义，正确做法是先创建一个新分支再将头指针指向</samp>
 
 ```shell
 # 在记录为aab508上新建分支
 git switch -c <branch_name> aab508
 ```
 
-可以为提交记录设置标签，通过标签辨别不同的开发节点
+<samp>可以为提交记录设置标签，通过标签辨别不同的开发节点</samp>
 
 ```shell
 # 当前分支上的<tag>是v1.0
@@ -579,112 +601,75 @@ git tag -d <tag_name>
 git tag <remote_name> --delete <tag_name>
 ```
 
-### SSH_Key
+## <samp>gh-pages</samp>
+
+<samp>在 GitHub 中，可以将静态页面部署到 GitHub 中</samp>
+
+<samp>方式一：分支名必须为：`gh-pages`</samp>
 
 ```shell
-# 1. 生成SSH_Key
-ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
-# Enter passphrase (empty for no passphrase):    # 直接回车
-# Enter same passphrase again:                   # 直接回车
+# 1. 添加远程库
+git remote add origin https://github.com/YasakaKanoko/git-tutorial.git
 
-# 2. 在用户目录: C:\Users\YasakaKanoko\.ssh
-# id_rsa: 私钥
-# id_rsa.pub: 公钥
+# 2. 修改分支名为 gh-pages
+git branch -M gh-pages
 
-# 3. 在GitHub的Settings -> SSH and GPG keys -> New SSH key
-# Title 命名
-# Key: id_rsa.pub公钥的内容
-# Add SSH key
+# 3. 推送分支
+git push -u origin gh-pages
 
-# 4. 验证
-ssh -T git@github.com
-# Hi YasakaKanoko! You've successfully authenticated, but GitHub does not provide shell access.
+# 4. 通过xxx.github.io访问
 ```
 
-### gitignore
+<samp>方式二：新建仓库时，命名为 `xxx.github.io` 也可</samp>
 
-默认情况下，git 会监视所有内容，但有些内容不希望被监视 ，如：node_modules 的内容
+### <samp>[Docusaurus](https://docusaurus.io/)</samp>
 
-设置 `.gitignore` 内容需要 git 忽略的文件
+<samp>FB 推出的开源静态内容管理系统，快速部署一个静态网站</samp>
 
-```pseudocode
-# 忽略的内容
-node_modules
-yarn.lock
-*.log
+<samp>安装</samp>
+
+```shell
+npx create-docusaurus@latest my-website classic
 ```
 
-## gh-pages
+<samp>启动项目</samp>
 
-在 GitHub 中，可以将静态页面部署到 GitHub 中
+```shell
+npm start
+```
 
-**要求**：
+<samp>配置项目：`docusaurus.config.js` 项目配置文件</samp>
 
-- 方式一：分支名必须为：`gh-pages`
+```javascript
+const config = {
+    title: 'xxx', // 标题栏
+    tagline: 'xxx', // 副标题
+    url: 'https://xxx.github.io', // 网站根目录
+    baseUrl: '/',
+    onBrokenLinks: 'throw',
+    onBrokenMarkdownLinks: 'warn',
+    favicon: 'img/favicon.ico',
+    organizationName: 'xxx', // 用户名
+    projectName: 'xxx.github.io', // 仓库地址
+    // 国际化: internalization
+    i18n: {
+        defaultLocale: 'zh',
+        locales: ['zh']
+    }
+};
+```
 
-  ```shell
-  # 1. 添加远程库
-  git remote add origin https://github.com/YasakaKanoko/git-tutorial.git
-  
-  # 2. 修改分支名为 gh-pages
-  git branch -M gh-pages
-  
-  # 3. 推送分支
-  git push -u origin gh-pages
-  
-  # 4. 通过xxx.github.io访问
-  ```
+<samp>部署：`npm run build`</samp>
 
-- 方式二：新建仓库时，命名为 `xxx.github.io` 也可
+```shell
+npm deploy
+```
 
-### [Docusaurus](https://docusaurus.io/)
+<samp>配置 `deploymentBranch` 指定分支</samp>
 
-FB 推出的开源静态内容管理系统，快速部署一个静态网站
+```javascript
+deploymentBranch: 'gh-pages'
+```
 
-- 安装
-
-  ```shell
-  npx create-docusaurus@latest my-website classic
-  ```
-
-- 启动项目
-
-  ```shell
-  npm start
-  ```
-
-- 配置项目：`docusaurus.config.js` 项目配置文件
-
-  ```javascript
-  const config = {
-      title: 'xxx', // 标题栏
-      tagline: 'xxx', // 副标题
-      url: 'https://xxx.github.io', // 网站根目录
-      baseUrl: '/',
-      onBrokenLinks: 'throw',
-      onBrokenMarkdownLinks: 'warn',
-      favicon: 'img/favicon.ico',
-      organizationName: 'xxx', // 用户名
-      projectName: 'xxx.github.io', // 仓库地址
-      // 国际化: internalization
-      i18n: {
-          defaultLocale: 'zh',
-          locales: ['zh']
-      }
-  };
-  ```
-
-- 部署：`npm run build`
-
-  ```shell
-  npm deploy
-  ```
-
-- 配置 `deploymentBranch` 指定分支
-
-  ```javascript
-  deploymentBranch: 'gh-pages'
-  ```
-
-- 配置环境变量：`GIT_USER` : `username`
+<samp>配置环境变量：`GIT_USER` : `username`</samp>
 
