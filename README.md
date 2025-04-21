@@ -2,7 +2,6 @@
 
 <samp><b>Table Of Contents</b></samp>
 
-- <samp>[SSH_Key](#sshkey)</samp>
 - <samp>[SSH_Key](#ssh_key)</samp>
 - <samp>[.gitignore](#gitignore)</samp>
 - <samp>[配置](#配置)</samp>
